@@ -22,7 +22,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: #2a2018;
+    background: #0d1b2a;
     font-family: 'Special Elite', serif;
     color: var(--ink);
     min-height: 100vh;
@@ -276,21 +276,21 @@
 
   /* SKILL BARS */
   .skill-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 220px 1fr 140px;
     align-items: center;
     margin: 10px 0;
     font-family: 'Courier Prime', monospace;
-    font-size: 14px;
+    font-size: 13px;
     gap: 12px;
   }
 
   .skill-name {
-    flex: 0 0 260px;
     color: var(--ink-faded);
+    line-height: 1.4;
   }
 
   .skill-bar-wrap {
-    flex: 1;
     height: 10px;
     background: var(--paper-dark);
     border: 1px solid var(--border);
@@ -303,10 +303,10 @@
   }
 
   .skill-val {
-    flex: 0 0 120px;
     color: var(--ink-faded);
-    font-size: 11px;
+    font-size: 12px;
     text-align: right;
+    line-height: 1.4;
   }
 
   /* WORK HISTORY */
@@ -330,7 +330,15 @@
     font-size: 16px;
     color: var(--ink-faded);
     font-style: italic;
-    margin: 2px 0 10px;
+    margin: 2px 0 2px;
+  }
+
+  .job-dates {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: var(--border);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
   }
 
   .job-detail {
@@ -518,8 +526,9 @@
   }
 
   .gene-key-entry p {
-    font-size: 12px;
+    font-size: 15px;
     color: var(--ink-faded);
+    line-height: 1.9;
   }
 
   /* GIFT REVEAL */
@@ -636,7 +645,7 @@
     font-size: 10px;
     letter-spacing: 2px;
     color: var(--border);
-    text-align: right;
+    text-align: center;
     margin-bottom: 30px;
   }
 
@@ -648,7 +657,7 @@
 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #2a2018; }
+  ::-webkit-scrollbar-track { background: #0d1b2a; }
   ::-webkit-scrollbar-thumb { background: var(--border); }
 
   @media (max-width: 600px) {
@@ -740,7 +749,7 @@
 
   <div class="form-field">
     <label class="form-label">First thought upon waking, 4 June 2026</label>
-    <textarea class="form-input multiline" readonly>Something about breakfast, followed immediately by three unrelated creative ideas and a vague sense that this year is going to be different.</textarea>
+    <textarea class="form-input multiline" rows="4" readonly>Something about breakfast, followed immediately by three unrelated creative ideas and a vague sense that this year is going to be different.</textarea>
     <span class="form-note">* Bureau note: this is consistent with all previous mornings on record.</span>
   </div>
 
@@ -832,7 +841,8 @@
 
   <div class="job">
     <div class="job-title">Gemini Sun LLC</div>
-    <div class="job-role">Creative Director of Dual Perspectives &nbsp;·&nbsp; Since birth, 1993 — present</div>
+    <div class="job-role">Creative Director of Dual Perspectives</div>
+    <div class="job-dates">Since birth, 1993 — present</div>
     <ul class="job-detail">
       <li>Exceptional written and verbal communication — has been known to write something genuinely moving and immediately follow it with a meme</li>
       <li>Generalist: knows a little about everything, a lot about whatever he's currently obsessed with, and something entirely different six months from now</li>
@@ -845,7 +855,8 @@
 
   <div class="job">
     <div class="job-title">Sagittarius Moon Institute</div>
-    <div class="job-role">Head of Nomadic Freedom and Continuous Departure &nbsp;·&nbsp; Since birth, 1993 — present</div>
+    <div class="job-role">Head of Nomadic Freedom and Continuous Departure</div>
+    <div class="job-dates">Since birth, 1993 — present</div>
     <ul class="job-detail">
       <li>Countries visited: [loading... this number keeps changing]</li>
       <li>Treats planet Earth as a personal playground — has acted accordingly, without apology</li>
@@ -858,7 +869,8 @@
 
   <div class="job">
     <div class="job-title">Libra Rising Associates</div>
-    <div class="job-role">Chief Atmosphere Officer &nbsp;·&nbsp; Since birth, 1993 — present</div>
+    <div class="job-role">Chief Atmosphere Officer</div>
+    <div class="job-dates">Since birth, 1993 — present</div>
     <ul class="job-detail">
       <li>He walks into a room and it shifts — documented across multiple continents and cultural contexts</li>
       <li>Trained experience designer: acutely aware of how every person in a space feels, often before they are</li>
@@ -996,7 +1008,7 @@
   <div class="review-card">
     <div class="stars">★★★★½</div>
     <p class="review-text">
-      I had the luck of sharing the womb with this one. And so I had a good feeling when he was arriving on Earth, but he exceeded my expectations. His mere existence has a positive impact on my entire being. The decades were a little rougher as we got used to each other, but he ages like a good cheese — the older, the more mature, grounded, and undebatably enjoyable. He makes me laugh, listens to me, grows with me, and has a genuinely good heart. Also: expect either instant replies or no reply. But overall, highly recommended. Would experience him all again.
+      I had the luck of sharing the womb with this one. And so I had a good feeling when he was arriving on Earth, but he exceeded my expectations. His mere existence has a positive impact on my entire being. The first decades were a little rougher as we got used to each other, but he ages like a good cheese — the older, the more mature, grounded, and undebatably enjoyable. He makes me laugh, listens to me, grows with me, and has a genuinely good heart. Also: expect either instant replies or no reply. But overall, highly recommended. Would experience him all again.
     </p>
     <div class="reviewer-name">Sami</div>
     <div class="reviewer-badge">Verified: Womb-sharing co-pilot · Sibling since 1993</div>
@@ -1053,7 +1065,7 @@
       Pretty cool, kind, supportive — but I've known him for 8 months and I still have no idea where he's from.
     </p>
     <div class="reviewer-name">Cait</div>
-    <div class="reviewer-badge">Verified: 8 months in · Origin: unconfirmed</div>
+    <div class="reviewer-badge">Verified: 8 months in · Has worked with subject</div>
   </div>
 
   <!-- CAMILO -->
