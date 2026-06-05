@@ -22,7 +22,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: #0d1b2a;
+    background: #213A7F;
     font-family: 'Special Elite', serif;
     color: var(--ink);
     min-height: 100vh;
@@ -616,8 +616,8 @@
     width: 100%;
     margin-top: 36px;
     padding: 14px 20px;
-    background: var(--ink);
-    color: var(--paper);
+    background: #213A7F;
+    color: #f2ead8;
     border: none;
     font-family: 'Courier Prime', monospace;
     font-size: 13px;
@@ -628,16 +628,61 @@
     transition: background 0.2s;
   }
 
-  .next-btn:hover { background: var(--ink-faded); }
+  .next-btn:hover { background: #1a2f6b; }
 
   .next-btn.secondary {
     background: transparent;
-    color: var(--ink);
-    border: 2px solid var(--ink);
+    color: #213A7F;
+    border: 2px solid #213A7F;
     margin-top: 14px;
   }
 
   .next-btn.secondary:hover { background: var(--paper-dark); }
+
+  /* NAV BAR */
+  .page-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-faded);
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover { border-color: #213A7F; color: #213A7F; }
+
+  .nav-dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    transition: background 0.2s;
+  }
+
+  .nav-dot.active { background: #213A7F; }
+  .nav-dot:hover { background: #213A7F; }
 
   /* FILE NUMBER */
   .file-number {
@@ -657,13 +702,15 @@
 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #0d1b2a; }
+  ::-webkit-scrollbar-track { background: #213A7F; }
   ::-webkit-scrollbar-thumb { background: var(--border); }
 
   @media (max-width: 600px) {
-    .page, .loading-inner { padding: 36px 28px; }
-    .skill-name { flex: 0 0 160px; }
+    .page, .loading-inner { padding: 30px 20px; }
+    .skill-row { grid-template-columns: 1fr 80px; }
     .skill-val { display: none; }
+    h2 { font-size: 22px; }
+    .form-input, .form-input.multiline { font-size: 13px; }
   }
 </style>
 </head>
@@ -710,6 +757,17 @@
      SECTION 1 — INTAKE FORM
 ═══════════════════════════════════════════════════════ -->
 <div class="page" id="intake">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goBack('intake')">← Back</button>
+    <div class="nav-dots">
+      <button class="nav-dot active" title="Intake" onclick="showSection('intake')"></button>
+      <button class="nav-dot" title="Soul Resume" onclick="showSection('resume')"></button>
+      <button class="nav-dot" title="Anomalies" onclick="showSection('anomalies')"></button>
+      <button class="nav-dot" title="Reviews" onclick="showSection('reviews')"></button>
+      <button class="nav-dot" title="Transmission" onclick="showSection('transmission')"></button>
+      <button class="nav-dot" title="Gift" onclick="showSection('gift')"></button>
+    </div>
+  </div>
   <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; CLASSIFICATION: OPEN</div>
 
   <div class="bureau-header">
@@ -782,6 +840,17 @@
      SECTION 2 — SOUL RESUME
 ═══════════════════════════════════════════════════════ -->
 <div class="page" id="resume">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goBack('resume')">← Back</button>
+    <div class="nav-dots">
+      <button class="nav-dot" title="Intake" onclick="showSection('intake')"></button>
+      <button class="nav-dot active" title="Soul Resume" onclick="showSection('resume')"></button>
+      <button class="nav-dot" title="Anomalies" onclick="showSection('anomalies')"></button>
+      <button class="nav-dot" title="Reviews" onclick="showSection('reviews')"></button>
+      <button class="nav-dot" title="Transmission" onclick="showSection('transmission')"></button>
+      <button class="nav-dot" title="Gift" onclick="showSection('gift')"></button>
+    </div>
+  </div>
   <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT A: PROFESSIONAL RECORD</div>
 
   <div class="bureau-header">
@@ -898,6 +967,17 @@
      SECTION 3 — DOCUMENTED ANOMALIES
 ═══════════════════════════════════════════════════════ -->
 <div class="page" id="anomalies">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goBack('anomalies')">← Back</button>
+    <div class="nav-dots">
+      <button class="nav-dot" title="Intake" onclick="showSection('intake')"></button>
+      <button class="nav-dot" title="Soul Resume" onclick="showSection('resume')"></button>
+      <button class="nav-dot active" title="Anomalies" onclick="showSection('anomalies')"></button>
+      <button class="nav-dot" title="Reviews" onclick="showSection('reviews')"></button>
+      <button class="nav-dot" title="Transmission" onclick="showSection('transmission')"></button>
+      <button class="nav-dot" title="Gift" onclick="showSection('gift')"></button>
+    </div>
+  </div>
   <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT B: DOCUMENTED ANOMALIES</div>
 
   <div class="bureau-header">
@@ -957,6 +1037,17 @@
      SECTION 4 — REVIEWS
 ═══════════════════════════════════════════════════════ -->
 <div class="page" id="reviews">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goBack('reviews')">← Back</button>
+    <div class="nav-dots">
+      <button class="nav-dot" title="Intake" onclick="showSection('intake')"></button>
+      <button class="nav-dot" title="Soul Resume" onclick="showSection('resume')"></button>
+      <button class="nav-dot" title="Anomalies" onclick="showSection('anomalies')"></button>
+      <button class="nav-dot active" title="Reviews" onclick="showSection('reviews')"></button>
+      <button class="nav-dot" title="Transmission" onclick="showSection('transmission')"></button>
+      <button class="nav-dot" title="Gift" onclick="showSection('gift')"></button>
+    </div>
+  </div>
   <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT C: PEER REVIEW</div>
 
   <div class="bureau-header">
@@ -1101,6 +1192,17 @@
      SECTION 5 — TRANSMISSION / GENE KEYS
 ═══════════════════════════════════════════════════════ -->
 <div class="page" id="transmission">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goBack('transmission')">← Back</button>
+    <div class="nav-dots">
+      <button class="nav-dot" title="Intake" onclick="showSection('intake')"></button>
+      <button class="nav-dot" title="Soul Resume" onclick="showSection('resume')"></button>
+      <button class="nav-dot" title="Anomalies" onclick="showSection('anomalies')"></button>
+      <button class="nav-dot" title="Reviews" onclick="showSection('reviews')"></button>
+      <button class="nav-dot active" title="Transmission" onclick="showSection('transmission')"></button>
+      <button class="nav-dot" title="Gift" onclick="showSection('gift')"></button>
+    </div>
+  </div>
   <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT D: INCOMING TRANSMISSION</div>
 
   <div class="bureau-header">
@@ -1155,6 +1257,17 @@
      SECTION 6 — GIFT REVEAL
 ═══════════════════════════════════════════════════════ -->
 <div class="page" id="gift">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goBack('gift')">← Back</button>
+    <div class="nav-dots">
+      <button class="nav-dot" title="Intake" onclick="showSection('intake')"></button>
+      <button class="nav-dot" title="Soul Resume" onclick="showSection('resume')"></button>
+      <button class="nav-dot" title="Anomalies" onclick="showSection('anomalies')"></button>
+      <button class="nav-dot" title="Reviews" onclick="showSection('reviews')"></button>
+      <button class="nav-dot" title="Transmission" onclick="showSection('transmission')"></button>
+      <button class="nav-dot active" title="Gift" onclick="showSection('gift')"></button>
+    </div>
+  </div>
   <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; CASE STATUS: RESOLVED (partially)</div>
 
   <div class="bureau-header">
@@ -1250,17 +1363,36 @@
   }
 
   // ─── SECTION NAVIGATION ─────────────────────────────────
+  const sectionOrder = ['intake','resume','anomalies','reviews','transmission','gift'];
+
   function showSection(id) {
-    // Hide loading
     document.getElementById('loading').style.display = 'none';
-    // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // Show target
     const target = document.getElementById(id);
     if (target) {
       target.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Auto-resize all textareas in this section
+      target.querySelectorAll('textarea.form-input').forEach(autoResize);
     }
+  }
+
+  function goBack(currentId) {
+    const idx = sectionOrder.indexOf(currentId);
+    if (idx <= 0) {
+      // Go back to loading screen
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('loading').style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      showSection(sectionOrder[idx - 1]);
+    }
+  }
+
+  // ─── TEXTAREA AUTO-RESIZE ────────────────────────────────
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
   }
 
   // ─── START ───────────────────────────────────────────────
