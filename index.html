@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASE FILE #33 — STEFANO</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #f2ead8;
+    --paper-dark: #e8dcc4;
+    --ink: #1e1208;
+    --ink-faded: #4a3728;
+    --red: #8b1a1a;
+    --gold: #7a5c1e;
+    --stamp-blue: #1a3a5c;
+    --border: #b8a882;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #2a2018;
+    font-family: 'Special Elite', serif;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  /* PAPER TEXTURE */
+  .page {
+    background: var(--paper);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 27px,
+        rgba(0,0,0,0.04) 27px,
+        rgba(0,0,0,0.04) 28px
+      );
+    max-width: 780px;
+    width: 100%;
+    margin: 0 auto 40px;
+    padding: 60px 70px;
+    border: 1px solid var(--border);
+    box-shadow: 4px 4px 0 #1a1208, 8px 8px 20px rgba(0,0,0,0.5);
+    position: relative;
+    display: none;
+  }
+
+  .page.active { display: block; }
+  .page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: 2px;
+  }
+
+  /* LOADING SCREEN */
+  #loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .loading-inner {
+    background: var(--paper);
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.04) 27px, rgba(0,0,0,0.04) 28px);
+    width: 100%;
+    padding: 60px 70px;
+    border: 1px solid var(--border);
+    box-shadow: 4px 4px 0 #1a1208, 8px 8px 20px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  .bureau-header {
+    text-align: center;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+
+  .bureau-header .seal {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .bureau-header h1 {
+    font-size: 22px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-family: 'Courier Prime', monospace;
+    font-weight: 700;
+  }
+
+  .bureau-header .subtitle {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-top: 6px;
+    display: block;
+  }
+
+  .terminal-line {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    color: var(--ink-faded);
+    margin: 8px 0;
+    min-height: 20px;
+  }
+
+  .terminal-line.highlight {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .progress-wrap {
+    margin: 20px 0;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+  }
+
+  .progress-bar-outer {
+    border: 1px solid var(--ink);
+    height: 16px;
+    margin-top: 6px;
+    background: var(--paper-dark);
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    background: var(--ink);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--ink-faded);
+    margin-top: 4px;
+  }
+
+  /* STAMPS */
+  .stamp {
+    display: inline-block;
+    border: 3px solid;
+    padding: 6px 14px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 11px;
+    font-family: 'Courier Prime', monospace;
+    font-weight: 700;
+    transform: rotate(-4deg);
+    position: absolute;
+  }
+
+  .stamp-red { color: var(--red); border-color: var(--red); }
+  .stamp-blue { color: var(--stamp-blue); border-color: var(--stamp-blue); }
+
+  /* SECTION HEADERS */
+  .section-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-family: 'Special Elite', serif;
+    font-size: 28px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 28px 0 8px;
+    color: var(--ink);
+  }
+
+  p {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink-faded);
+    margin-bottom: 12px;
+  }
+
+  p strong, p b {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* INTAKE FORM */
+  .form-field {
+    margin: 18px 0;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 4px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    margin: 0;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: not-allowed;
+    outline: none;
+    pointer-events: none;
+    display: block;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+    vertical-align: bottom;
+  }
+
+  .form-input.multiline {
+    resize: none;
+    border: 1px solid var(--border);
+    padding: 6px;
+    background: rgba(0,0,0,0.02);
+    display: block;
+    min-height: 56px;
+    height: auto;
+  }
+
+  .form-note {
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 1px;
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  /* SKILL BARS */
+  .skill-row {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    gap: 12px;
+  }
+
+  .skill-name {
+    flex: 0 0 260px;
+    color: var(--ink-faded);
+  }
+
+  .skill-bar-wrap {
+    flex: 1;
+    height: 10px;
+    background: var(--paper-dark);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .skill-bar {
+    height: 100%;
+    background: var(--ink);
+  }
+
+  .skill-val {
+    flex: 0 0 120px;
+    color: var(--ink-faded);
+    font-size: 11px;
+    text-align: right;
+  }
+
+  /* WORK HISTORY */
+  .job {
+    border-left: 2px solid var(--border);
+    padding-left: 20px;
+    margin: 24px 0;
+  }
+
+  .job-title {
+    font-family: 'Courier Prime', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .job-role {
+    font-family: 'Special Elite', serif;
+    font-size: 16px;
+    color: var(--ink-faded);
+    font-style: italic;
+    margin: 2px 0 10px;
+  }
+
+  .job-detail {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: var(--ink-faded);
+    line-height: 1.8;
+    padding-left: 0;
+  }
+
+  .job-detail li {
+    list-style: none;
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+
+  .job-detail li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+  }
+
+  /* ANOMALIES */
+  .anomaly-box {
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.02);
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    position: relative;
+  }
+
+  .anomaly-box .anomaly-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .anomaly-box p {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--ink-faded);
+  }
+
+  .anomaly-box .bureau-note {
+    border-top: 1px solid var(--border);
+    margin-top: 14px;
+    padding-top: 10px;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink);
+  }
+
+  /* REVIEWS */
+  .stars {
+    color: var(--gold);
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .review-card {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+    position: relative;
+  }
+
+  .review-card:last-child { border-bottom: none; }
+
+  .reviewer-name {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-top: 10px;
+  }
+
+  .reviewer-badge {
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 1px;
+    font-style: italic;
+  }
+
+  .review-text {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--ink-faded);
+    margin: 8px 0;
+  }
+
+  .review-pros {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--ink-faded);
+    padding-left: 0;
+  }
+
+  .review-pros li {
+    list-style: none;
+    padding-left: 16px;
+    position: relative;
+    margin-bottom: 3px;
+  }
+
+  .review-pros li::before {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 10px;
+  }
+
+  .review-aggregate {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .review-aggregate .big-score {
+    font-size: 48px;
+    font-family: 'Special Elite', serif;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .review-aggregate .out-of {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: var(--ink-faded);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  .review-aggregate .caveat {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: var(--ink-faded);
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  /* TRANSMISSION */
+  .transmission-line {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    color: var(--ink-faded);
+    line-height: 2;
+    text-align: center;
+  }
+
+  .transmission-line.key {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .gene-key-entry {
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .gene-key-entry .gk-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .gene-key-entry p {
+    font-size: 12px;
+    color: var(--ink-faded);
+  }
+
+  /* GIFT REVEAL */
+  .gift-box {
+    border: 2px solid var(--ink);
+    padding: 30px 36px;
+    text-align: center;
+    margin: 30px 0;
+    position: relative;
+  }
+
+  .gift-box .case-closed {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 16px;
+  }
+
+  .gift-box .resolution-text {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: var(--ink-faded);
+    line-height: 2;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .gift-divider {
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 20px 0;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .gift-title {
+    font-family: 'Special Elite', serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .gift-subtitle {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: var(--ink-faded);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .contact-block {
+    font-family: 'Courier Prime', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 8px 0;
+  }
+
+  .bureau-footnote {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: var(--ink-faded);
+    font-style: italic;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .final-note {
+    text-align: center;
+    font-family: 'Special Elite', serif;
+    font-size: 18px;
+    color: var(--ink);
+    padding: 30px 0 10px;
+    border-top: 1px solid var(--border);
+    margin-top: 30px;
+  }
+
+  /* BUTTON */
+  .next-btn {
+    display: block;
+    width: 100%;
+    margin-top: 36px;
+    padding: 14px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .next-btn:hover { background: var(--ink-faded); }
+
+  .next-btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    margin-top: 14px;
+  }
+
+  .next-btn.secondary:hover { background: var(--paper-dark); }
+
+  /* FILE NUMBER */
+  .file-number {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--border);
+    text-align: right;
+    margin-bottom: 30px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #2a2018; }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+
+  @media (max-width: 600px) {
+    .page, .loading-inner { padding: 36px 28px; }
+    .skill-name { flex: 0 0 160px; }
+    .skill-val { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     LOADING SCREEN
+═══════════════════════════════════════════════════════ -->
+<div id="loading">
+  <div class="loading-inner">
+    <div class="bureau-header">
+      <span class="seal">Official Document — Classified</span>
+      <h1>Bureau of Existential Affairs</h1>
+      <span class="subtitle">Office of Soul Records &amp; Cosmic Review</span>
+    </div>
+
+    <div id="terminal-output">
+      <div class="terminal-line highlight" id="t0" style="display:none">INITIATING CASE FILE RETRIEVAL...</div>
+      <div class="terminal-line" id="t1" style="display:none">Connecting to: Akashic Cloud Server (Atlantis node)...</div>
+      <div class="terminal-line" id="t2" style="display:none">Cross-referencing: Natal Chart Archive — Caracas, 14:46, 04 Jun 1993...</div>
+      <div class="terminal-line" id="t3" style="display:none">Locating subject: last confirmed signal — somewhere with good food and no WiFi...</div>
+      <div class="terminal-line" id="t4" style="display:none">Retrieving peer testimony... 847 interactions logged...</div>
+      <div class="terminal-line" id="t5" style="display:none">Warning: Subject has been offline. Data retrieval may take longer than usual.</div>
+      <div class="terminal-line" id="t6" style="display:none">Loading Gene Key sequences... 35.3 · 64.6 · 5.3 · 63.6...</div>
+      <div class="terminal-line highlight" id="t7" style="display:none">SOUL DATA RETRIEVED. PREPARING CASE FILE...</div>
+    </div>
+
+    <div class="progress-wrap" id="progress-wrap" style="display:none">
+      <div>Compiling dossier: <span id="pct">0</span>%</div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="pbar"></div>
+      </div>
+      <div class="progress-label">Note: this process would be faster if subject were reachable by phone.</div>
+    </div>
+
+    <button class="next-btn" id="open-file-btn" style="display:none" onclick="showSection('intake')">
+      [ Open Case File #33 ]
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 1 — INTAKE FORM
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="intake">
+  <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; CLASSIFICATION: OPEN</div>
+
+  <div class="bureau-header">
+    <span class="seal">Bureau of Existential Affairs</span>
+    <h1>Subject Intake Form</h1>
+    <span class="subtitle">Case #33 — Mandatory Review Upon Reaching the Age of Jesus</span>
+  </div>
+
+  <p style="font-size:11px; color: var(--ink-faded); font-style: italic; margin-bottom: 24px;">
+    Note: All fields have been pre-completed by the Bureau. Subject is not required to verify. The Bureau already knows.
+  </p>
+
+  <div class="form-field">
+    <label class="form-label">Full Name</label>
+    <textarea class="form-input" rows="1" readonly>Stefano [REDACTED]</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Date of Birth</label>
+    <textarea class="form-input" rows="1" readonly>04 June 1993 — Caracas, Venezuela (14:46, important)</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Age</label>
+    <textarea class="form-input" rows="1" readonly>33 — see: Christ Protocol, Article IV</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Species / Type</label>
+    <textarea class="form-input" rows="1" readonly>Human / Projector (HD) — does not initiate; waiting confirmed</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Current Location</label>
+    <textarea class="form-input" rows="1" readonly>[Updating... subject changed cities since this form was drafted]</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">First thought upon waking, 4 June 2026</label>
+    <textarea class="form-input multiline" readonly>Something about breakfast, followed immediately by three unrelated creative ideas and a vague sense that this year is going to be different.</textarea>
+    <span class="form-note">* Bureau note: this is consistent with all previous mornings on record.</span>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Current life status</label>
+    <textarea class="form-input multiline" readonly>In motion. Specifically: between two places, one meaningful project, and at least one conversation that started at 11pm and ended at 3am.</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Do you have a 5-year plan?</label>
+    <textarea class="form-input" rows="1" readonly>Subject laughed at this question. Moving on.</textarea>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Reason for review</label>
+    <textarea class="form-input" rows="1" readonly>Standard 33-year audit. Mandatory for all humans. See: Christ Protocol.</textarea>
+  </div>
+
+  <div style="margin-top: 32px; text-align: center;">
+    <span class="stamp stamp-blue" style="position: relative; transform: rotate(-2deg); display: inline-block; margin-bottom: 16px;">Identity Confirmed</span>
+  </div>
+
+  <button class="next-btn" onclick="showSection('resume')">
+    [ Proceed to Professional Record ]
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 2 — SOUL RESUME
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="resume">
+  <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT A: PROFESSIONAL RECORD</div>
+
+  <div class="bureau-header">
+    <span class="seal">Hologenetic Employment History — Soul Division</span>
+    <h1>Stefano</h1>
+    <span class="subtitle">33 Years of Experience in Being Himself &nbsp;·&nbsp; Caracas · Earth · [Location: Updating]</span>
+  </div>
+
+  <hr class="divider">
+
+  <h3>Core Competencies</h3>
+
+  <div class="skill-row">
+    <span class="skill-name">Ideation</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:100%"></div></div>
+    <span class="skill-val">999+ endorsements</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Starting New Projects</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:98%"></div></div>
+    <span class="skill-val">847 logged (since 1993)</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Making People Laugh</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:88%"></div></div>
+    <span class="skill-val">384 documented instances</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Finishing Projects</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:2%"></div></div>
+    <span class="skill-val">12 &nbsp;<em style="font-size:10px">(disputed)</em></span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Holding contradictory truths</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:100%"></div></div>
+    <span class="skill-val">Gemini-certified</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Arriving when invited (never before)</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:100%"></div></div>
+    <span class="skill-val">Projector, verified</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Disappearing with no signal</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:95%"></div></div>
+    <span class="skill-val">Expert level</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-name">Making everyone feel something</span>
+    <div class="skill-bar-wrap"><div class="skill-bar" style="width:100%"></div></div>
+    <span class="skill-val">Unquantifiable</span>
+  </div>
+
+  <hr class="divider">
+
+  <h3>Work History</h3>
+
+  <div class="job">
+    <div class="job-title">Gemini Sun LLC</div>
+    <div class="job-role">Creative Director of Dual Perspectives &nbsp;·&nbsp; Since birth, 1993 — present</div>
+    <ul class="job-detail">
+      <li>Exceptional written and verbal communication — has been known to write something genuinely moving and immediately follow it with a meme</li>
+      <li>Generalist: knows a little about everything, a lot about whatever he's currently obsessed with, and something entirely different six months from now</li>
+      <li>Can go deep with one person or work a full room — sometimes both simultaneously</li>
+      <li>Light-spirited in a way that doesn't sacrifice depth; capable of making something feel both important and fun</li>
+      <li>Simultaneously requires profound human connection and significant alone time; internal negotiations ongoing</li>
+      <li>Capable of going fully with the flow OR overthinking a decision for four days — selection process for which mode activates remains undocumented</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-title">Sagittarius Moon Institute</div>
+    <div class="job-role">Head of Nomadic Freedom and Continuous Departure &nbsp;·&nbsp; Since birth, 1993 — present</div>
+    <ul class="job-detail">
+      <li>Countries visited: [loading... this number keeps changing]</li>
+      <li>Treats planet Earth as a personal playground — has acted accordingly, without apology</li>
+      <li><em>Culo inquieto</em>, certified — a permanent, productive restlessness that has generated extraordinary life experiences</li>
+      <li>Genuinely unafraid to disrupt: systems, plans, dinner reservations, entire life chapters</li>
+      <li>Passionate in a way that is occasionally exhausting and always contagious</li>
+      <li>Always learning something new — architecture, psychology, fermentation, obscure film movements; the list is not curated, it just keeps growing</li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-title">Libra Rising Associates</div>
+    <div class="job-role">Chief Atmosphere Officer &nbsp;·&nbsp; Since birth, 1993 — present</div>
+    <ul class="job-detail">
+      <li>He walks into a room and it shifts — documented across multiple continents and cultural contexts</li>
+      <li>Trained experience designer: acutely aware of how every person in a space feels, often before they are</li>
+      <li>Frequently assumes responsibility for group emotional climate — this was not in the original job description but he does it anyway</li>
+      <li>Diplomatic mediator, particularly between family members who did not formally request this service and have come to depend on it</li>
+      <li>Charming without trying, which is somehow more charming than trying</li>
+      <li>Has a gift for making people feel genuinely seen — a skill that is rarer than it sounds and that he appears to deploy effortlessly</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <h3>References</h3>
+  <p><strong>Saturn:</strong> <em>"Stefano and I have had our differences. I pushed. He resisted. Ultimately, he became more interesting because of it. Reluctant endorsement."</em></p>
+  <p><strong>Libra Rising:</strong> <em>"Whatever room he enters, it changes. I take partial credit."</em></p>
+  <p><strong>Enneagram 7:</strong> <em>"I can't stay long — but while I'm here, outstanding human."</em></p>
+
+  <button class="next-btn" onclick="showSection('anomalies')">
+    [ Proceed to Flagged Behavioral Patterns ]
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 3 — DOCUMENTED ANOMALIES
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="anomalies">
+  <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT B: DOCUMENTED ANOMALIES</div>
+
+  <div class="bureau-header">
+    <span class="seal">Internal Classification — Bureau Eyes Only</span>
+    <h1>Flagged Behavioral Patterns</h1>
+    <span class="subtitle">3 anomalies on record &nbsp;·&nbsp; Status: Loving concern</span>
+  </div>
+
+  <p style="font-style: italic; font-size: 11px; color: var(--ink-faded); margin-bottom: 28px;">
+    The following patterns have been observed, documented, and ultimately accepted by the Bureau as features of this particular soul configuration.
+  </p>
+
+  <div class="anomaly-box">
+    <span class="anomaly-label">⚠ Anomaly #1 — ENFP Classification</span>
+    <p>
+      Subject is constitutionally incapable of having a surface-level conversation.<br><br>
+      Has been documented forming meaningful connections in airport queues, bus stops, laundromats, and at least one elevator. Cannot encounter a stranger without learning something real about their life. Strangers do not appear to mind.<br><br>
+      Subject generates enthusiasm at volumes that are, technically, contagious. Bureau considered quarantine. Effect was assessed as positive. Quarantine abandoned.
+    </p>
+    <div class="bureau-note">
+      Bureau Note: Subject does not network. Subject simply finds everyone interesting, which produces the same result but with better energy.
+    </div>
+  </div>
+
+  <div class="anomaly-box">
+    <span class="anomaly-label">⚠ Anomaly #2 — Enneagram 7 Classification</span>
+    <p>
+      Subject maintains approximately 14 open tabs on life simultaneously.<br><br>
+      When presented with one option, generates three more. When asked to commit to a direction, briefly considers monasticism, then books a flight instead.<br><br>
+      The Bureau notes: this is not avoidance. It is an unusually large appetite for being alive. The subject is not afraid of commitment — he is afraid that committing to one thing means missing the fullness of everything else.
+    </p>
+    <div class="bureau-note">
+      Bureau Note: The fear of missing out has, paradoxically, ensured that subject misses very little. The Bureau considers this a net positive.
+    </div>
+  </div>
+
+  <div class="anomaly-box">
+    <span class="anomaly-label">⚠ Anomaly #3 — Gene Key 5 / Evolution Path: Temporal Relationship Disorder</span>
+    <p>
+      The Bureau has documented a complex and evolving relationship between subject and the concept of waiting.<br><br>
+      Subject's evolutionary path — Gene Key 5 — is, technically, the path toward patience. The Bureau notes the institutional irony that this has been assigned to someone who has already mentally left the room before the current experience has finished.<br><br>
+      This is not a character flaw. The record states clearly: the impatience surfaces precisely when subject is trying to escape something that no longer fits. It is, in other words, a compass disguised as restlessness.<br><br>
+      The shadow is the fear of monotony. The gift — accessed when he leans in rather than out — is the discovery that nothing he truly loves can ever become monotonous.
+    </p>
+    <div class="bureau-note">
+      Bureau Note: Subject is not running away from things. He is running toward a life large enough to hold him. The Bureau has updated its assessment accordingly.
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="showSection('reviews')">
+    [ Proceed to Peer Review — Verified Testimonials ]
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 4 — REVIEWS
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="reviews">
+  <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT C: PEER REVIEW</div>
+
+  <div class="bureau-header">
+    <span class="seal">Verified Consumer Testimony — Soul Division</span>
+    <h1>Stefano</h1>
+    <span class="subtitle">2026 Edition &nbsp;·&nbsp; 33 Years In Production &nbsp;·&nbsp; Continuously Updated</span>
+  </div>
+
+  <div class="review-aggregate">
+    <div class="big-score">4.9</div>
+    <div class="stars">★★★★★</div>
+    <div class="out-of">OUT OF 5.0 — BASED ON 847 INTERACTIONS</div>
+    <div class="caveat">Some reviewers are still waiting for a reply</div>
+  </div>
+
+  <!-- PAPÁ -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      Experiencia extraordinaria. Llegó hace 33 años y desde entonces no ha dejado de sorprender. Excelente combinación de inteligencia, valores y sentido del humor. Producto muy superior a las expectativas iniciales del fabricante. Volvería a ser su padre sin pensarlo. No sé si es un hijo, una obra de ingeniería o una anomalía del universo, pero después de 33 años sigo pensando que fue una de las mejores decisiones de producción de Rembraldi Corp.
+    </p>
+    <div class="reviewer-name">Papá</div>
+    <div class="reviewer-badge">Verified: Authorized Manufacturer · 33 years in production</div>
+  </div>
+
+  <!-- MARLY -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      Tuve la suerte de disfrutar esta experiencia durante muchos años y puedo decir, con total honestidad, que supera ampliamente las expectativas.<br><br>
+      Stefano combina alegría, generosidad, sentido del humor y una capacidad única para conectar con las personas. Es de esas raras experiencias que hacen que todos se sientan bienvenidos y que dejan una huella positiva en quienes se cruzan en su camino.
+    </p>
+    <ul class="review-pros">
+      <li>Energía positiva permanente.</li>
+      <li>Generosidad genuina.</li>
+      <li>Sentido del humor excepcional.</li>
+      <li>Capacidad para hacer amigos en cualquier lugar del mundo.</li>
+      <li>Un radar gastronómico extraordinario. Stefano no come para vivir; vive para descubrir qué va a comer después.</li>
+    </ul>
+    <p class="review-text" style="margin-top:10px;">
+      <strong>Aspectos a tener en cuenta:</strong> Puede generar ataques espontáneos de risa. Tiene la peligrosa capacidad de elevar demasiado el estándar de amistad. Después de conocerlo, el resto de las personas pueden parecer un poco menos divertidas.<br><br>
+      Detrás de su alegría, su carisma y su legendario amor por la buena comida, hay una persona profundamente buena, noble, auténtica y llena de amor por la vida y por quienes la comparten con él.
+    </p>
+    <div class="reviewer-name">Marly</div>
+    <div class="reviewer-badge">Verified: Long-term user · High satisfaction</div>
+  </div>
+
+  <!-- SAMI -->
+  <div class="review-card">
+    <div class="stars">★★★★½</div>
+    <p class="review-text">
+      I had the luck of sharing the womb with this one. And so I had a good feeling when he was arriving on Earth, but he exceeded my expectations. His mere existence has a positive impact on my entire being. The decades were a little rougher as we got used to each other, but he ages like a good cheese — the older, the more mature, grounded, and undebatably enjoyable. He makes me laugh, listens to me, grows with me, and has a genuinely good heart. Also: expect either instant replies or no reply. But overall, highly recommended. Would experience him all again.
+    </p>
+    <div class="reviewer-name">Sami</div>
+    <div class="reviewer-badge">Verified: Womb-sharing co-pilot · Sibling since 1993</div>
+  </div>
+
+  <!-- LUCY -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      Stefano is a master of disguise. He once escaped Berlin, went missing for several years and tried to hide behind a huge moustache and by constantly changing his background and putting exotic locations in his Zoom name. But you can't hide that personality, so I spotted him at a facilitation festival. 🕵️ Better luck next time mate. Good job he found another vocation because he's not a very good undercover agent.
+    </p>
+    <div class="reviewer-name">Lucy</div>
+    <div class="reviewer-badge">Verified: Reconnaissance operative · Successfully identified subject</div>
+  </div>
+
+  <!-- ADRIEN -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      Big in size and even bigger in heart. This dude will bring out a smile from you even if you're out of serotonin. Addictive personality — handle with care.
+    </p>
+    <div class="reviewer-name">Adrien</div>
+    <div class="reviewer-badge">Verified: Recovered · Handle with care warning confirmed</div>
+  </div>
+
+  <!-- GIULIA -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      <strong>Pros:</strong><br>
+      Unlimited social battery. Can talk to absolutely anyone, anywhere, at any time. Always has a story to tell.<br><br>
+      <strong>Cons:</strong><br>
+      Replies to messages according to a calendar system not yet understood by modern science. Maintaining digital contact with him can be challenging due to his commitment to being permanently somewhere else in the world.<br><br>
+      Would I recommend him? Absolutely. Just don't expect a reply before you've forgotten what you originally messaged him about.
+    </p>
+    <div class="reviewer-name">Giulia</div>
+    <div class="reviewer-badge">Verified: Still waiting on one message · Recommends regardless</div>
+  </div>
+
+  <!-- LUANA -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      King of saying he's busy but will still end up talking on the phone with you for two hours.
+    </p>
+    <div class="reviewer-name">Luana</div>
+    <div class="reviewer-badge">Verified: Has experienced the two-hour call · Multiple times</div>
+  </div>
+
+  <!-- CAIT -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      Pretty cool, kind, supportive — but I've known him for 8 months and I still have no idea where he's from.
+    </p>
+    <div class="reviewer-name">Cait</div>
+    <div class="reviewer-badge">Verified: 8 months in · Origin: unconfirmed</div>
+  </div>
+
+  <!-- CAMILO -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      Stefano is the fastest information-processing human product I have tested. Converts incoming speech into useful, relevant responses in a matter of milliseconds — using his own integrated mobile technology in a way that borders on magic. You mention a restaurant: before you've finished the sentence, the unit has already accessed the reviews, confirmed the location, and retrieved information about a sister restaurant in another country you didn't know existed. All of this while maintaining full conversational presence and appearing to have heard every word you said.<br><br>
+      I'm genuinely surprised he's able to deliver great insight while making you feel connected at the same time. The multitasking is, frankly, unsettling.<br><br>
+      An unexpected feature: I don't have to physically look down to interact with it. Great height.
+    </p>
+    <div class="reviewer-name">Camilo</div>
+    <div class="reviewer-badge">Verified: Eye-level interaction confirmed · 190cm · No neck strain reported</div>
+  </div>
+
+  <!-- THE UNIVERSE -->
+  <div class="review-card">
+    <div class="stars">★★★★★</div>
+    <p class="review-text">
+      We don't typically leave reviews. But 33 years in, we feel it's warranted.<br><br>
+      Exceeded projections. Recommend continued operation.
+    </p>
+    <div class="reviewer-name">The Universe</div>
+    <div class="reviewer-badge">Unverified · Source: above our pay grade</div>
+  </div>
+
+  <button class="next-btn" onclick="showSection('transmission')">
+    [ Proceed to Case Resolution ]
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 5 — TRANSMISSION / GENE KEYS
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="transmission">
+  <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; EXHIBIT D: INCOMING TRANSMISSION</div>
+
+  <div class="bureau-header">
+    <span class="seal">Bureau of Existential Affairs — Case Status Update</span>
+    <h1>Limits of the Record</h1>
+    <span class="subtitle">What the Bureau knows. And what it doesn't.</span>
+  </div>
+
+  <p style="text-align:center; margin: 28px 0 20px;">
+    After 33 years of data, the Bureau has reached its limits.<br><br>
+    The systems available to us — natal charts, personality typology, employment records, peer testimony — have painted a picture.<br><br>
+    But there is a layer we cannot access from here.
+  </p>
+
+  <hr class="divider">
+
+  <h3>Transmission Received — Gene Key Archive</h3>
+
+  <div class="gene-key-entry">
+    <span class="gk-label">Gene Key 35 · Life's Work · Adventure → Boundlessness</span>
+    <p>
+      His Life's Work is to break free from the cage of conditioning and follow where his dreams have always pointed. To make his life into an incredible adventure that few people ever dream of. He really can be one of the luckiest people alive — if he trusts in the power of his dreams and the higher awareness of his heart.
+    </p>
+  </div>
+
+  <div class="gene-key-entry">
+    <span class="gk-label">Gene Key 64 · Purpose · Imagination → Illumination</span>
+    <p>
+      His purpose is to brighten the lives of others. His hidden Gift is Imagination — what he is here to stand for. He is one of the world's great dreamers. He must allow his own imagination to surprise him as well as others. When he is gone, he will have left his dreams behind in the world, shining in the faces of those who come after him.
+    </p>
+  </div>
+
+  <p style="text-align:center; margin: 28px 0; font-style: italic; font-size: 12px; color: var(--ink);">
+    These are not descriptions of who he has been.<br>
+    They are directions for what comes next.
+  </p>
+
+  <hr class="divider">
+
+  <p style="text-align:center; font-family: 'Courier Prime', monospace; font-size: 13px; color: var(--ink-faded);">
+    The Bureau is authorized to go no further.<br><br>
+    What lies ahead requires a different kind of record.
+  </p>
+
+  <button class="next-btn" onclick="showSection('gift')">
+    [ Access the Akashic Records ]
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 6 — GIFT REVEAL
+═══════════════════════════════════════════════════════ -->
+<div class="page" id="gift">
+  <div class="file-number">FILE REF: BEA-1993-0604-33 &nbsp;|&nbsp; CASE STATUS: RESOLVED (partially)</div>
+
+  <div class="bureau-header">
+    <span class="seal">Bureau of Existential Affairs — Final Determination</span>
+    <h1>Case #33 — Closed</h1>
+    <span class="subtitle">With the following recommendation</span>
+  </div>
+
+  <div style="margin: 30px 0; font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 2; color: var(--ink-faded);">
+    <p>
+      The Bureau has reviewed 33 years of available data. We have consulted the natal chart, the personality archives, the peer testimony, and three separate cosmic filing systems.
+    </p>
+    <p>
+      Our conclusion: <strong>this subject requires deeper access than we are authorized to provide.</strong>
+    </p>
+    <p>
+      For further information regarding life purpose (the actual one), soul contracts, what that recurring dream means, and what comes next in general — please contact the Akashic Records Department directly.
+    </p>
+    <p>
+      To book your session, please see the attached gift voucher below.
+    </p>
+    <p>
+      The Bureau takes no responsibility for any revelations, disruptions, or spontaneous life changes that may result.<br>
+      Subject has been briefed.
+    </p>
+  </div>
+
+  <div class="gift-divider">
+    <div class="gift-title">Akashic Records Reading</div>
+    <div class="gift-subtitle">Gifted by: your sister &nbsp;·&nbsp; To be used at your earliest convenience</div>
+    <div class="contact-block">Roberto</div>
+    <div class="contact-block">+34 637 375 340</div>
+  </div>
+
+  <div class="bureau-footnote">
+    The Bureau wishes subject a meaningful 33rd year.<br>
+    We'll be watching.
+  </div>
+
+  <div class="final-note">
+    Happy birthday, Stef. I love you.
+  </div>
+</div>
+
+
+<script>
+  // ─── LOADING SEQUENCE ───────────────────────────────────
+  const lines = ['t0','t1','t2','t3','t4','t5','t6','t7'];
+  let lineIndex = 0;
+
+  function showNextLine() {
+    if (lineIndex < lines.length) {
+      document.getElementById(lines[lineIndex]).style.display = 'block';
+      lineIndex++;
+      const delay = lineIndex === 1 ? 400 : (600 + Math.random() * 600);
+      setTimeout(showNextLine, delay);
+    } else {
+      // Show progress bar
+      document.getElementById('progress-wrap').style.display = 'block';
+      animateProgress();
+    }
+  }
+
+  function animateProgress() {
+    let pct = 0;
+    const labels = [
+      'Decoding natal chart...',
+      'Cross-referencing peer testimony...',
+      'Locating subject (still traveling)...',
+      'Compiling 33 years of data...',
+      'Running Gene Key analysis...',
+      'Finalizing dossier...',
+      'Note: this process would be faster if subject were reachable by phone.'
+    ];
+    let labelIdx = 0;
+    const interval = setInterval(() => {
+      pct += (Math.random() * 8 + 2);
+      if (pct >= 100) { pct = 100; clearInterval(interval); }
+      document.getElementById('pbar').style.width = pct + '%';
+      document.getElementById('pct').textContent = Math.floor(pct);
+      if (pct > labelIdx * 15 && labelIdx < labels.length) {
+        document.querySelector('.progress-label').textContent = labels[labelIdx];
+        labelIdx++;
+      }
+      if (pct >= 100) {
+        setTimeout(() => {
+          document.getElementById('open-file-btn').style.display = 'block';
+        }, 600);
+      }
+    }, 180);
+  }
+
+  // ─── SECTION NAVIGATION ─────────────────────────────────
+  function showSection(id) {
+    // Hide loading
+    document.getElementById('loading').style.display = 'none';
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Show target
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // ─── START ───────────────────────────────────────────────
+  window.addEventListener('load', () => {
+    setTimeout(showNextLine, 800);
+  });
+</script>
+</body>
+</html>
