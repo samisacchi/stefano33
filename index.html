@@ -120,10 +120,11 @@
 
   .terminal-line {
     font-family: 'Courier Prime', monospace;
-    font-size: 13px;
+    font-size: 15px;
     color: var(--ink-faded);
-    margin: 8px 0;
-    min-height: 20px;
+    margin: 14px 0;
+    min-height: 22px;
+    line-height: 1.6;
   }
 
   .terminal-line.highlight {
@@ -206,8 +207,8 @@
 
   p {
     font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    line-height: 1.8;
+    font-size: 15px;
+    line-height: 1.9;
     color: var(--ink-faded);
     margin-bottom: 12px;
   }
@@ -241,7 +242,7 @@
     padding: 0;
     margin: 0;
     font-family: 'Courier Prime', monospace;
-    font-size: 13px;
+    font-size: 15px;
     color: var(--ink);
     cursor: not-allowed;
     outline: none;
@@ -279,7 +280,7 @@
     align-items: center;
     margin: 10px 0;
     font-family: 'Courier Prime', monospace;
-    font-size: 12px;
+    font-size: 14px;
     gap: 12px;
   }
 
@@ -334,7 +335,7 @@
 
   .job-detail {
     font-family: 'Courier Prime', monospace;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--ink-faded);
     line-height: 1.8;
     padding-left: 0;
@@ -375,7 +376,7 @@
   }
 
   .anomaly-box p {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.9;
     color: var(--ink-faded);
   }
@@ -424,7 +425,7 @@
 
   .review-text {
     font-family: 'Courier Prime', monospace;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.9;
     color: var(--ink-faded);
     margin: 8px 0;
@@ -432,7 +433,7 @@
 
   .review-pros {
     font-family: 'Courier Prime', monospace;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.9;
     color: var(--ink-faded);
     padding-left: 0;
@@ -1182,7 +1183,9 @@
   </div>
 
   <div class="final-note">
-    Happy birthday, Stef. I love you.
+    Happy birthday, Gordito. I love you.<br>
+    And so does the universe.<br>
+    Thank you for existing and being you.
   </div>
 </div>
 
@@ -1196,7 +1199,7 @@
     if (lineIndex < lines.length) {
       document.getElementById(lines[lineIndex]).style.display = 'block';
       lineIndex++;
-      const delay = lineIndex === 1 ? 400 : (600 + Math.random() * 600);
+      const delay = lineIndex === 1 ? 600 : (1400 + Math.random() * 800);
       setTimeout(showNextLine, delay);
     } else {
       // Show progress bar
